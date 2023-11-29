@@ -1,0 +1,14 @@
+<include href="head.html" />
+
+<check if="{{ isset(@content) }}">
+    <true>
+        <include href="{{@content}}" />
+    </true>
+    <false>
+        <div>Není co zobrazit</div>
+    </false>
+</check>
+
+
+<include href="footer.html" />
+

@@ -1,0 +1,16 @@
+{
+  "name": "vendor_name/nahravani-souboru",
+  "description": "ukázka nahráváí aukládání souborů f3",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "rvode",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+    "bcosca/fatfree": ">=3.8",
+    "ikkez/f3-cortex": ">=v1.7"
+  }
+}
