@@ -1,0 +1,78 @@
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    form {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 300px;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 16px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    button {
+        background-color: #4caf50;
+        color: #fff;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+</style>
+
+<form method="post">
+    <check if="{{@tlacitko=='Registrovat'}}">
+        <true>
+            <input type="text" name="name" placeholder="Zadejte jméno"><br>
+        </true>
+
+    </check>
+
+
+    <input type="text" name="email" placeholder="Zadejte email"><br>
+    <input type="password" name="password" placeholder="Zadejte heslo"><br>
+
+
+    <check if="{{@tlacitko=='Registrovat'}}">
+        <true>
+            <select id=role name=role required>
+
+                <option value=nic>-</option>
+
+                <repeat group="{{@role}}" value="{{@radek}}">
+
+                    <option value={{@radek.id}}>{{@radek.nazev}}</option>
+
+
+                </repeat>
+            </select>
+            <br>
+        </true>
+    </check>
+
+
+
+    <button type="submit">{{@tlacitko}}</button>
+</form>
+<br>

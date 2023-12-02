@@ -1,0 +1,52 @@
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+        }
+
+        button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #ddd;
+        }
+    </style>
+
+
+<button onclick="redirectToPage(1)">Úkol 1</button>
+<button onclick="redirectToPage(2)">Úkol 2</button>
+<button onclick="redirectToPage(3)">Úkol 3</button>
+<button onclick="redirectToPage(4)">Úkol 4</button>
+<button onclick="redirectToPage(5)">Úkol 5</button>
+<button onclick="redirectToPage(6)">Úkol 6</button>
+<button onclick="redirectToPage(7)">Úkol 7</button>
+<button onclick="redirectToPage(8)">Úkol 8</button>
+<button onclick="redirectToPage(9)">Úkol 9</button>
+<button onclick="redirectToPage(10)">Úkol 10</button>
+
+
+<script>
+    function redirectToPage(buttonNumber) {
+        // Přesměrování na PHP s parametrem
+        window.location.href = 'otazka/' + buttonNumber;
+    }
+</script>
+
