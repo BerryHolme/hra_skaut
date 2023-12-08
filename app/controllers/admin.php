@@ -115,6 +115,7 @@ class admin
             for ($i = 1; $i <= 10; $i++) {
                 $odpovedi = new \models\Odpovedi();
                 $odpovedi->odpoved = $base->get("POST.odpoved" . $i);
+                ehco $base->get("POST.odpoved" . $i);
                 $odpovedi->save();
             }
 
@@ -133,7 +134,7 @@ class admin
             }
 
 
-            $base->reroute("/");
+            //$base->reroute("/");
         }else{
             $base->reroute("/");
         }

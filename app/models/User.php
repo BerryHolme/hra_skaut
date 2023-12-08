@@ -31,43 +31,53 @@ class User extends Cortex
         ],
         'otazka1'=>[
             'type'=>'VARCHAR256',
-            'nullable'=>false
+            'nullable'=>false,
+            'default'=>0
         ],
         'otazka2'=>[
             'type'=>'VARCHAR256',
-            'nullable'=>false
+            'nullable'=>false,
+            'default'=>0
         ],
         'otazka3'=>[
             'type'=>'VARCHAR256',
-            'nullable'=>false
+            'nullable'=>false,
+            'default'=>0
         ],
         'otazka4'=>[
             'type'=>'VARCHAR256',
-            'nullable'=>false
+            'nullable'=>false,
+            'default'=>0
         ],
         'otazka5'=>[
             'type'=>'VARCHAR256',
-            'nullable'=>false
+            'nullable'=>false,
+            'default'=>0
         ],
         'otazka6'=>[
             'type'=>'VARCHAR256',
-            'nullable'=>false
+            'nullable'=>false,
+            'default'=>0
         ],
         'otazka7'=>[
             'type'=>'VARCHAR256',
-            'nullable'=>false
+            'nullable'=>false,
+            'default'=>0
         ],
         'otazka8'=>[
             'type'=>'VARCHAR256',
-            'nullable'=>false
+            'nullable'=>false,
+            'default'=>0
         ],
         'otazka9'=>[
             'type'=>'VARCHAR256',
-            'nullable'=>false
+            'nullable'=>false,
+            'default'=>0
         ],
         'otazka10'=>[
             'type'=>'VARCHAR256',
-            'nullable'=>false
+            'nullable'=>false,
+            'default'=>0
         ]
 
 
