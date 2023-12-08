@@ -8,7 +8,7 @@ class uvodni
     {
         $role = $base->get('SESSION.user.role');
         if($role==1){
-
+            $base->reroute("/admin/menu");
         }elseif ($base->get("SESSION.user")){
             $base->reroute("/uvod");
         }else {
@@ -43,5 +43,20 @@ class uvodni
         $base->reroute("/prihlasit");
     }
 
+    public function extra_prihlasit(\Base $base)
+    {
+        //GET /extern/@user/@id/@email/@role = \controllers\uvodni->extra_prihlasit
+        $user = new \models\User();
+        $u = $user->findone(["id=?",$base->get("PARAMS.id")]);
+
+        if($u->email==$base->get("PARAMS.email")) {
+            $base->set("SESSION.user[id]", $u->id);
+            $base->set("SESSION.user[name]", $u->name);
+            $base->set("SESSION.user[email]", $u->email);
+            $base->set("SESSION.user[role]", $u->role->id);
+        }
+        $base->reroute("/");
+
+    }
 
 }

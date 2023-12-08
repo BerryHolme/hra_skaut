@@ -1,0 +1,81 @@
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 80%;
+        margin: 20px auto;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    a {
+        text-decoration: none;
+        color: #3498db;
+    }
+
+    a:hover {
+        color: #2980b9;
+    }
+</style>
+
+
+
+<h1>Seznam registrovaných uživatelů.</h1>
+<table>
+    <thead>
+    <th>id</th>
+    <th>jméno</th>
+    <th>role</th>
+    <th>odkaz</th>
+    <th>akce</th>
+    </thead>
+    <tbody>
+    <repeat group="{{@user}}" value="{{@radek}}">
+        <tr>
+            <td>{{@radek.id}}</td>
+            <td>{{@radek.name}}</td>
+            <td>{{@radek.role.nazev}}</td>
+            <td>http://skaut.local/extern/{{@radek.name}}/{{@radek.id}}/{{@cislo}}/{{@radek.email}}</td>
+
+            <td>
+                <form method="post">
+                    <input type="hidden" name="id_user" value="{{@radek.id}}">
+                    <input type="submit" value="smazat">
+                </form>
+            </td>
+
+
+        </tr>
+    </repeat>
+    </tbody>
+</table>
+

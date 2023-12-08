@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kopírování odkazu do schránky</title>
+</head>
+<body>
+
+<p>Kliknutím na odkaz se odkaz zkopíruje do schránky:</p>
+
+<a href="https://www.google.com" id="kopirovatOdkaz">Zkopírovat odkaz na Google</a>
+
+<script>
+    document.getElementById('kopirovatOdkaz').addEventListener('click', function(event) {
+        event.preventDefault(); // Zabránit přechodu na odkaz
+
+        // Získat odkaz (href) z příslušného odkazu
+        var odkaz = this.getAttribute('href');
+
+        // Vytvoření dočasného textarea prvku
+        var textarea = document.createElement('textarea');
+        textarea.value = odkaz;
+
+        // Přidání textarea prvku do stránky
+        document.body.appendChild(textarea);
+
+        // Vybrání textu v textarea
+        textarea.select();
+
+        // Zkopírování textu do schránky
+        document.execCommand('copy');
+
+        // Odstranění dočasného textarea prvku
+        document.body.removeChild(textarea);
+
+        // Upozornění uživatele
+        alert('Odkaz byl zkopírován do schránky: ' + odkaz);
+    });
+</script>
+
+</body>
+</html>
