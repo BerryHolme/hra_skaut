@@ -15,7 +15,8 @@
         border-radius: 8px;
         padding: 20px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        width: 300px;
+        width: 100%; /* Přizpůsobte šířku formuláře na mobilní zařízení */
+        max-width: 300px; /* Nastavte maximální šířku formuláře */
     }
 
     input {
@@ -28,6 +29,7 @@
     }
 
     button {
+        width: 100%; /* Přizpůsobte šířku tlačítka na mobilní zařízení */
         background-color: #4caf50;
         color: #fff;
         padding: 10px;
@@ -53,14 +55,12 @@
 
     <check if="{{@hotovo=='false'}}">
         <true>
-            <input type="text" id="odpoved" name="odpoved" placeholder="napište co vám vyšlo">
+            <input type="text" id="odpoved" name="odpoved" placeholder="Napište, co vám vyšlo">
         </true>
         <false>
             <div class="result-text">{{@odpoved}}</div>
         </false>
     </check>
-
-
 
     <br>
     <button type="submit"> {{@tlacitko}}</button>
