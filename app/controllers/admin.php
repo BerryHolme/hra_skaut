@@ -116,8 +116,6 @@ class admin
                 $odpovedi = new \models\Odpovedi();
                 $odpovedi->odpoved = $base->get("POST.odpoved" . $i);
                 $odpovedi->odpovezeno = 0;
-                $cotoje = $base->get("POST.odpoved" . $i);
-                echo $cotoje;
                 $odpovedi->save();
             }
 
@@ -136,7 +134,7 @@ class admin
             }
 
 
-            //$base->reroute("/");
+            $base->reroute("/");
         }else{
             $base->reroute("/");
         }
