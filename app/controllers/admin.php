@@ -115,6 +115,7 @@ class admin
             for ($i = 1; $i <= 10; $i++) {
                 $odpovedi = new \models\Odpovedi();
                 $odpovedi->odpoved = $base->get("POST.odpoved" . $i);
+                $odpovedi->odpovezeno = 0;
                 $odpovedi->save();
             }
 
