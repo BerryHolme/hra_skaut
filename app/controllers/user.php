@@ -58,7 +58,7 @@ class user
 
         $user = $users->findone(["id=?",$base->get('SESSION.user.id')]);
 
-        if($user->$promena == "1"){
+        if($user && is_object($user) && $user->$promena == "1"){
             $base->reroute("/uvod");
         }else{
 
