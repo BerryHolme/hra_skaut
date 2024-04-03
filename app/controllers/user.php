@@ -70,7 +70,7 @@ class user
                 $user->$promena = 1;
                 $user->save();
 
-                $base->reroute("/uvod");
+                $base->reroute();
             }else{
                 $base->reroute();
             }
