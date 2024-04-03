@@ -27,7 +27,7 @@ class user
         if ($user->$promena == "1") {
             $odpovedi = new \models\Odpovedi();
             $odpoved = $odpovedi->findone(["id=?", $otazka]);
-            $base->set("odpoved", $odpoved->odpoved);
+            $base->set("odpoved", $odpoved->odpovezeno);
             $base->set("hotovo", "true");
             $base->set("tlacitko", "zpět");
             $base->set("spatne", " ");
