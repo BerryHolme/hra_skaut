@@ -19,31 +19,29 @@ class user
     public function getformular(\Base $base)
     {
         if($base->get("SESSION.user")){
-        $users = new \models\User();
-        $otazka = $base->get("PARAMS.id");
-        $promena = "otazka" . strval($otazka);
+            $users = new \models\User();
+            $otazka = $base->get("PARAMS.id");
+            $promena = "otazka" . strval($otazka);
 
-        $user = $users->findone(["id=?", $base->get('SESSION.user.id')]);
-        if ($user->$promena == "1") {
-            $odpovedi = new \models\Odpovedi();
-            $odpoved = $odpovedi->findone(["id=?", $otazka]);
-            $base->set("odpoved", $odpoved->odpovezeno);
-            $base->set("hotovo", "true");
-            $base->set("tlacitko", "zpět");
-            $base->set("spatne", " ");
-            $base->set("content", "U_formular.html");
-        } else {
-            $base->set("tlacitko", "Odeslat");
-            $base->set("hotovo", "false");
-            $base->set("spatne", " ");
-            $base->set("content", "U_formular.html");
-        }
+            $user = $users->findone(["id=?", $base->get('SESSION.user.id')]);
 
+            // Přidání kontroly, zda $user je skutečně objekt
+            if($user && is_object($user) && $user->$promena == "1") {
+                $odpovedi = new \models\Odpovedi();
+                $odpoved = $odpovedi->findone(["id=?", $otazka]);
+                $base->set("odpoved", $odpoved->odpovezeno);
+                $base->set("hotovo", "true");
+                $base->set("tlacitko", "zpět");
+                $base->set("spatne", " ");
+                $base->set("content", "U_formular.html");
+            } else {
+                $base->set("tlacitko", "Odeslat");
+                $base->set("hotovo", "false");
+                $base->set("spatne", " ");
+                $base->set("content", "U_formular.html");
+            }
 
-        //$u = $user->findone(["email=?",$email]);
-
-
-        echo \Template::instance()->render("layout.html");
+            echo \Template::instance()->render("layout.html");
         } else{
             $base->reroute("/");
         }
