@@ -7,7 +7,7 @@ class pruzkum
     public function index(\Base $base)
     {
         // Corrected condition check
-        if($base->get("SESSION.user[state]") == true){
+        if($base->get("SESSION.user[state]")){
             echo \Template::instance()->render("Z_Pruzkum_Dekujeme.html");
         }else{
             echo \Template::instance()->render("Z_Pruzkum.html");
@@ -18,7 +18,7 @@ class pruzkum
     {
         $klobasky = $base->get("POST.klobasky");
         // Corrected condition check
-        if($base->get("SESSION.user[state]") == true){
+        if($base->get("SESSION.user[state]")){
             echo \Template::instance()->render("Z_Pruzkum_Dekujeme.html");
         }else{
             if ($klobasky > 9 or $klobasky < 1){
