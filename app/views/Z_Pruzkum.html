@@ -38,16 +38,29 @@
             background-color: darkorange;
         }
     </style>
+
+    <script>
+        window.onload = function() {
+            document.getElementById('myForm').onsubmit = function() {
+                var klobasky = document.getElementById('klobasky').value;
+                if (klobasky < 1 || klobasky > 9) {
+                    alert('Počet klobásek musí být mezi 1 a 9.');
+                    return false; // Zabrání odeslání formuláře
+                }
+                return true;
+            };
+        };
+    </script>
 </head>
 <body>
 
 <h1>JSI ZVÁN!</h1>
 <p>Úterý 30.4.2024 poslední zvonění třídy E4</p>
-<p>O velké přestávce budeme před školou grilovat klobásky tak se stav! Rádi tě uvidíme</p>
+<p>O velké přestávce budeme před školou grilovat KLOBÁSKY V ROHLÍKU tak se stav! Rádi tě uvidíme</p>
 <h2>Kolik si dáš klobásek?</h2>
 
-<form method="post">
-    <input type="number" name="klobasky" id="klobasky" value="1" max="10" min="1">
+<form method="post" id="myForm">
+    <input type="number" name="klobasky" id="klobasky" value="1" min="1" max="9">
     <input type="submit" value="Odeslat">
 </form>
 <img src="/images/image_transparent_background.png" alt="hovno">

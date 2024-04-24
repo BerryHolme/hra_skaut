@@ -11,11 +11,7 @@ class pruzkumMD extends Cortex
 
     protected $fieldConf = [
         'pocet' => [
-            'type'=>'INT4',
-            'nullable'=>false
-        ],
-        'mac'=>[
-            'type'=>'TEXT', 'nullable'=>false
+            'type'=>'INT8'
         ]
     ];
 
