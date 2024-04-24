@@ -23,6 +23,10 @@ class install
         \models\Role::setup();
         \models\Odpovedi::setdown();
         \models\Odpovedi::setup();
+
+        \models\pruzkumMD::setup();
+        \models\pruzkumMD::setdown();
+
         //\models\zpravy::setdown();
         //\models\zpravy::setup();
         $this->addRole();
