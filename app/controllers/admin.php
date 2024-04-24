@@ -134,7 +134,7 @@ class admin
             }
 
 
-            $base->reroute("/uvod");
+            $base->reroute("/admin/menu");
         }else{
             $base->reroute("/prihlasit");
         }
