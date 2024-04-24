@@ -24,16 +24,20 @@
             background-color: white;
             padding: 10px;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Objekty ceny jsou zarovnány dolů na střed */
         }
 
         img {
             max-width: 100%;
             height: auto;
+            margin: 0 auto; /* Zarovnání obrázku na střed */
         }
 
         .price {
-            font-size: large;
-            font-weight: bold;
+            margin-top: 0; /* Odstranění výchozího horního okraje */
+            margin-bottom: auto; /* Zarovnání názvu produktu k horní části */
         }
         .fewf{
             text-align: center;
