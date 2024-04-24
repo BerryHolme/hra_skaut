@@ -38,7 +38,7 @@ class uvodni
             $base->set("SESSION.user[name]",$u->name);
             $base->set("SESSION.user[email]",$u->email);
             $base->set("SESSION.user[role]",$u->role->id);
-            $base->reroute("/");
+            $base->reroute("/uvod");
         }
         $base->reroute("/prihlasit");
     }
