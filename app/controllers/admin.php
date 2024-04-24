@@ -11,7 +11,7 @@ class admin
             $base->set("content", "A_menu.html");
             echo \Template::instance()->render("layout.html");
         }else{
-            $base->reroute("/");
+            $base->reroute("/prihlasit");
         }
     }
 
