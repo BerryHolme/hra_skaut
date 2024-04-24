@@ -12,7 +12,7 @@ class user
             $base->set("content", "U_menu.html");
             echo \Template::instance()->render("layout.html");
         }else{
-            $base->reroute("/");
+            $base->reroute("/prihlasit");
         }
     }
 
@@ -43,7 +43,7 @@ class user
 
             echo \Template::instance()->render("layout.html");
         } else{
-            $base->reroute("/");
+            $base->reroute("/prihlasit");
         }
     }
 
@@ -79,7 +79,7 @@ class user
 
 
         }else{
-            $base->reroute("/");
+            $base->reroute("/prihlasit");
         }
 
 
@@ -90,11 +90,3 @@ class user
 
 }
 
-/*
- * $odpovedi = new \models\Odpovedi();
-            $odpoved = $odpovedi->findone(["id=?",$base->get('SESSION.user.id')]);
-            $base->set("odpoved",$odpoved->odpoved);
-            $base->set("hotovo","true");
-            $base->set("tlacitko","zpět");
-            $base->set("content","U_formular.html");
- */

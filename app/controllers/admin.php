@@ -26,7 +26,7 @@ class admin
             echo \Template::instance()->render("layout.html");
             //echo \Template::instance()->render("index.html");
         }else{
-            $base->reroute("/");
+            $base->reroute("/prihlasit");
         }
     }
 
@@ -38,7 +38,7 @@ class admin
             $user->save();
             $base->reroute("/admin/menu");
         }else{
-            $base->reroute("/");
+            $base->reroute("/prihlasit");
         }
 
     }
@@ -60,7 +60,7 @@ class admin
             $base->set("content", "A_seznam_reg.html");
             echo \Template::instance()->render("layout.html");
         }else{
-            $base->reroute("/");
+            $base->reroute("/prihlasit");
         }
 
 
@@ -77,7 +77,7 @@ class admin
 
 
         }else{
-            $base->reroute("/");
+            $base->reroute("/prihlasit");
         }
     }
 
@@ -90,7 +90,7 @@ class admin
             $base->set("content", "A_seznam_odpov.html");
             echo \Template::instance()->render("layout.html");
         }else{
-            $base->reroute("/");
+            $base->reroute("/prihlasit");
         }
     }
 
@@ -101,7 +101,7 @@ class admin
             $base->set("content", "A_add_odpoved.html");
             echo \Template::instance()->render("layout.html");
         }else{
-            $base->reroute("/");
+            $base->reroute("/prihlasit");
         }
     }
 
@@ -134,9 +134,9 @@ class admin
             }
 
 
-            $base->reroute("/");
+            $base->reroute("/uvod");
         }else{
-            $base->reroute("/");
+            $base->reroute("/prihlasit");
         }
     }
 
