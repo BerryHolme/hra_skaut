@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Produkty</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+
     <style>
         body {
             background-color: #FF8C00FF;
@@ -38,7 +40,7 @@
             margin-bottom: 5px;
         }
         input[type="number"] {
-            width: 50px;
+            width: 70px;
             padding: 5px;
             text-align: center;
             font-size: xxx-large;
@@ -49,6 +51,15 @@
             cursor: pointer;
             font-size: xxx-large;
         }
+
+        .Downbutton {
+            width: 80%;
+            margin: 10px auto; /* odsazení z vrchu a spodu a zarovnání na střed */
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: xxx-large;
+        }
+
         #totalPrice {
             font-size: xxx-large;
             margin-bottom: 20px;
@@ -57,6 +68,22 @@
         #discountInput {
             margin-bottom: 10px;
         }
+        #resetButton {
+            font-size: xxx-large;
+            padding: 10px 20px;
+            background-color: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #sendButton {
+            background-color: green;
+            color: white;
+            border: none;
+        }
+
+
+
     </style>
 </head>
 <body>
@@ -109,6 +136,13 @@
         <button>+</button>
     </div>
 </div>
+<button class="Downbutton" id="resetButton">Resetovat</button>
+<button class="Downbutton" id="sendButton">Odeslat</button>
+<button class="Downbutton" id="generateQRButton">Generovat QR kód</button>
+<div id="qrCode"></div>
+
+
+
 
 
 <script>
@@ -248,6 +282,75 @@
     // Aplikovat slevu po kliknutí na tlačítko
     applyDiscountButton.addEventListener('click', () => {
         updateTotalPrice();
+    });
+    resetButton.addEventListener('click', () => {
+        products.forEach(product => {
+            const inputs = product.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.value = 0;
+            });
+            if (product.hasAttribute('data-base-price')) {
+                updateSpecialProductPrice(product);
+            } else {
+                updatePrice(product);
+            }
+        });
+        discountInput.value = 0;
+        updateTotalPrice();
+    });
+    const sendOrder = () => {
+        const order = {
+            products: [],
+            discount: parseInt(discountInput.value),
+            totalPrice: parseInt(totalPriceElement.textContent.split(' ')[2]),
+            datetime: new Date().toISOString()
+        };
+
+        products.forEach(product => {
+            const name = product.querySelector('.name').textContent;
+            const quantity = parseInt(product.querySelector('input[type="number"]').value);
+            order.products.push({ name, quantity });
+        });
+
+        fetch('order/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(order)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Nepodařilo se odeslat objednávku.');
+                }
+                resetButton.click();
+                console.log('Objednávka úspěšně odeslána na server.');
+            })
+            .catch(error => {
+                console.error('Chyba při odesílání objednávky:', error);
+            });
+    };
+
+    sendButton.addEventListener('click', sendOrder);
+
+    const generateQRButton = document.getElementById('generateQRButton');
+    const qrCodeElement = document.getElementById('qrCode');
+
+    generateQRButton.addEventListener('click', () => {
+        // Vymaže předchozí QR kód, pokud existuje
+        qrCodeElement.innerHTML = '';
+        const totalPrice = parseInt(totalPriceElement.textContent.split(' ')[2]);
+        const paymentInfo = `SPD*1.0*ACC:CZ6030300000002437882068*RN:MATOUS SUCHY*AM:${totalPrice}*CC:CZK*MSG:Klobaska`;
+
+        // Generování nového QR kódu
+        new QRCode(qrCodeElement, {
+            text: paymentInfo,
+            width: 400,
+            height: 400,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
     });
 
 </script>

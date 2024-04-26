@@ -39,4 +39,32 @@ class pruzkum
     {
         echo \Template::instance()->render("cashier.html");
     }
+
+    public function order(\Base $base)
+    {
+        $json_data = file_get_contents('php://input');
+
+        $order = json_decode($json_data, true);
+
+        if ($order !== null) {
+
+            $products = $order['products'];
+            $discount = $order['discount'];
+            $totalPrice = $order['totalPrice'];
+            $datetime = $order['datetime'];
+
+            // Zpracování produktů
+            foreach ($products as $product) {
+                $name = $product['name'];
+                $quantity = $product['quantity'];
+                echo "$name, $quantity\n";
+            }
+
+            echo "Sleva: $discount\n";
+            echo "Celková cena: $totalPrice\n";
+            echo "Čas objednávky: $datetime\n";
+        } else {
+            echo "Chyba při zpracování JSON dat.";
+        }
+    }
 }
