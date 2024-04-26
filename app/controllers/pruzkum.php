@@ -34,4 +34,9 @@ class pruzkum
         }
         $base->reroute("/");
     }
+
+    public function cashier()
+    {
+        echo \Template::instance()->render("cashier.html");
+    }
 }

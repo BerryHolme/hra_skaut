@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Produkty</title>
+    <style>
+        body {
+            background-color: #FF8C00FF;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: xx-large;
+        }
+        .product {
+            background-color: white;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-bottom: 2px solid black;
+            width: 90%; /* Šířka produktu na základě šířky obrazovky */
+
+            box-sizing: border-box; /* Zahrnutí paddingu a borderu v šířce */
+        }
+        .name {
+            font-size: xx-large;
+            color: black;
+            margin-bottom: 5px;
+        }
+        .price {
+            font-size: xx-large;
+            color: green;
+            margin-bottom: 5px;
+        }
+        .quantity-controls, .quantity-controls-special {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        input[type="number"] {
+            width: 50px;
+            padding: 5px;
+            text-align: center;
+            font-size: xxx-large;
+        }
+        button {
+            padding: 5px 10px;
+            margin: 0 5px;
+            cursor: pointer;
+            font-size: xxx-large;
+        }
+        #totalPrice {
+            font-size: xxx-large;
+            margin-bottom: 20px;
+            color: white;
+        }
+        #discountInput {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div id="totalPrice">Celková cena: 0 Kč</div>
+<div id="discountInput">
+    <label>Sleva:</label>
+    <input type="number" id="discountValue" value="0" min="0">
+    <button id="applyDiscountButton">Použít slevu</button>
+</div>
+<div class="product special" data-base-price="30">
+    <div class="name">Chleba s klobáskami</div>
+    <div class="quantity-controls-special">
+        <label>Chleba:</label>
+        <button>-</button>
+        <input type="number" value="0" min="0">
+        <button>+</button>
+    </div>
+    <div class="quantity-controls-special">
+        <label>Klobásky:</label>
+        <button>-</button>
+        <input type="number" value="0" min="0">
+        <button>+</button>
+    </div>
+    <div class="price">0 Kč</div>
+</div>
+<div class="product" data-price="25">
+    <div class="name">Klobáska v rohlíku</div>
+    <div class="price">0 Kč</div>
+    <div class="quantity-controls">
+        <button>-</button>
+        <input type="number" value="0" min="0">
+        <button>+</button>
+    </div>
+</div>
+<div class="product" data-price="25">
+    <div class="name">Pepsi</div>
+    <div class="price">0 Kč</div>
+    <div class="quantity-controls">
+        <button>-</button>
+        <input type="number" value="0" min="0">
+        <button>+</button>
+    </div>
+</div>
+<div class="product" data-price="20">
+    <div class="name">CapriSun</div>
+    <div class="price">0 Kč</div>
+    <div class="quantity-controls">
+        <button>-</button>
+        <input type="number" value="0" min="0">
+        <button>+</button>
+    </div>
+</div>
+
+
+<script>
+    const products = document.querySelectorAll('.product');
+    const totalPriceElement = document.getElementById('totalPrice');
+    const discountInput = document.getElementById('discountValue');
+    const applyDiscountButton = document.getElementById('applyDiscountButton');
+
+    const updateSpecialProductPrice = (product) => {
+        const breadInput = product.querySelectorAll('input')[0];
+        const sausageInput = product.querySelectorAll('input')[1];
+        const breadCount = parseInt(breadInput.value);
+        const sausageCount = parseInt(sausageInput.value);
+        if (breadCount === 0 && sausageCount === 0) {
+            // Pokud jsou obě hodnoty nula, cena zůstává nula
+            product.querySelector('.price').textContent = `0 Kč`;
+        } else {
+            // Výchozí nastavení na 1 chleba a 2 klobásky pokud je něco přidáno
+            let totalBread = breadCount === 0 ? 1 : breadCount;
+            let totalSausage = sausageCount === 0 ? 2 : sausageCount;
+            let price = 20 + (totalBread - 1) * 15 + 10 + (totalSausage - 2) * 15;
+            if (totalSausage > 2) {
+                price -= 5;
+            }
+            product.querySelector('.price').textContent = `${price} Kč`;
+        }
+        updateTotalPrice();
+    };
+
+    const updatePrice = (product) => {
+        const quantity = parseInt(product.querySelector('input[type="number"]').value);
+        const basePrice = parseInt(product.getAttribute('data-price'));
+        const priceElement = product.querySelector('.price');
+        priceElement.textContent = `${basePrice * quantity} Kč`;
+        updateTotalPrice();
+    };
+
+    const updateTotalPrice = () => {
+        let total = 0;
+        products.forEach(product => {
+            if (product.hasAttribute('data-base-price')) {
+                const breadInput = product.querySelectorAll('input')[0];
+                const sausageInput = product.querySelectorAll('input')[1];
+                const breadCount = parseInt(breadInput.value);
+                const sausageCount = parseInt(sausageInput.value);
+                if (breadCount === 0 && sausageCount === 0) {
+                    // Pokud jsou obě hodnoty nula, cena zůstává nula
+                    total += 0;
+                } else {
+                    // Výchozí nastavení na 1 chleba a 2 klobásky pokud je něco přidáno
+                    let totalBread = breadCount === 0 ? 1 : breadCount;
+                    let totalSausage = sausageCount === 0 ? 2 : sausageCount;
+                    let price = 20 + (totalBread - 1) * 15 + 10 + (totalSausage - 2) * 15;
+                    if (totalSausage > 2) {
+                        price -= 5;
+                    }
+                    total += price;
+                }
+            } else {
+                const quantity = parseInt(product.querySelector('input[type="number"]').value);
+                const basePrice = parseInt(product.getAttribute('data-price'));
+                total += quantity * basePrice;
+            }
+        });
+
+        // Aplikace slevy
+        const discount = parseInt(discountInput.value);
+        total -= discount;
+
+        totalPriceElement.textContent = `Celková cena: ${total} Kč`;
+    };
+
+    products.forEach(product => {
+        const inputs = product.querySelectorAll('input');
+        inputs.forEach((input, index) => {
+            const minusButton = product.querySelectorAll('button')[index * 2];
+            const plusButton = product.querySelectorAll('button')[index * 2 + 1];
+            minusButton.addEventListener('click', () => {
+                if (product.hasAttribute('data-base-price')) {
+                    if (parseInt(input.value) > 0) {
+                        input.value = parseInt(input.value) - 1;
+                    }
+                    if (input === product.querySelectorAll('input')[0] && input.value == 0) {
+                        product.querySelectorAll('input')[1].value = 0;
+                    }
+                    if (input === product.querySelectorAll('input')[1] && input.value == 1) {
+                        input.value = 0;
+                        product.querySelectorAll('input')[0].value = 0;
+                    }
+                    updateSpecialProductPrice(product);
+                } else {
+                    if (parseInt(input.value) > 0) {
+                        input.value = parseInt(input.value) - 1;
+                        updatePrice(product);
+                    }
+                }
+            });
+            plusButton.addEventListener('click', () => {
+                if (product.hasAttribute('data-base-price')) {
+                    if (parseInt(input.value) === 0) {
+                        if (input === product.querySelectorAll('input')[0]) {
+                            input.value = 1;
+                            if (parseInt(product.querySelectorAll('input')[1].value) === 0) {
+                                product.querySelectorAll('input')[1].value = 2;
+                            }
+                        }
+                        if (input === product.querySelectorAll('input')[1]) {
+                            input.value = 2;
+                            if (parseInt(product.querySelectorAll('input')[0].value) === 0) {
+                                product.querySelectorAll('input')[0].value = 1;
+                            }
+                        }
+                    } else {
+                        input.value = parseInt(input.value) + 1;
+                    }
+                    updateSpecialProductPrice(product);
+                } else {
+                    input.value = parseInt(input.value) + 1;
+                    updatePrice(product);
+                }
+            });
+            input.addEventListener('change', () => {
+                if (product.hasAttribute('data-base-price')) {
+                    updateSpecialProductPrice(product);
+                } else {
+                    updatePrice(product);
+                }
+            });
+            if (product.hasAttribute('data-base-price')) {
+                updateSpecialProductPrice(product); // Initial update call for special products
+            } else {
+                updatePrice(product); // Initial update call for regular products
+            }
+        });
+    });
+
+    // Aplikovat slevu po kliknutí na tlačítko
+    applyDiscountButton.addEventListener('click', () => {
+        updateTotalPrice();
+    });
+
+</script>
+
+
+</body>
+</html>
