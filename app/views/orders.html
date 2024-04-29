@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <title>Objednávky</title>
     <style>
+        body{
+            font-family: "Franklin Gothic Medium", serif;
+            background-color: darkorange;
+            font-size: xx-large;
+            text-align: center;
+        }
         .order-box {
+            background-color: whitesmoke;
             border: 1px solid black;
             padding: 10px;
             margin: 10px;
@@ -14,6 +21,13 @@
         }
         button {
             cursor: pointer;
+            width: 80%;
+            font-size: xx-large;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 0;
+            border: white;
+            background-color: #4CAF50;
         }
     </style>
 </head>
@@ -26,7 +40,7 @@
 
     function fetchOrders() {
         $.ajax({
-            url: 'getOrderes/', // URL skriptu na serveru pro načtení objednávek
+            url: 'getOrderes/',
             type: 'GET',
             dataType: 'json',
             success: function(orders) {
@@ -47,13 +61,16 @@
 
         orders.forEach(order => {
             const orderBox = $('<div class="order-box"></div>');
-            orderBox.append(`<div class="order-item">Čas odeslání: ${order.cas_objednavky}</div>`);
-            orderBox.append(`<div class="order-item">Chleba: ${order.chleba}</div>`);
-            orderBox.append(`<div class="order-item">Klobásky: ${order.klobasky}</div>`);
-            orderBox.append(`<div class="order-item">Klobáska v rohlíku: ${order.klobaska_v_rohliku}</div>`);
-            orderBox.append(`<div class="order-item">Pepsi: ${order.pepsi}</div>`);
-            orderBox.append(`<div class="order-item">Capri Sun: ${order.capri_sun}</div>`);
-            const doneButton = $('<button>Hotovo</button>');
+            orderBox.append(`<div style="color: rgba(77,77,77,0.5)" class="order-item">${order.id}</div>`);
+            const orderTime = new Date(order.cas_objednavky).toLocaleTimeString(); // Zobrazení pouze času
+            orderBox.append(`<div style="color: rgba(77,77,77,0.5)" class="order-item">${orderTime}</div><hr>`);
+
+            addItem(orderBox, 'Chleba', order.chleba);
+            addItem(orderBox, 'Klobásky', order.klobasky);
+            addItem(orderBox, 'Klobáska v rohlíku', order.klobaska_v_rohliku);
+            addItem(orderBox, 'Pepsi', order.pepsi);
+            addItem(orderBox, 'Capri Sun', order.capri_sun);
+            const doneButton = $('<br><button>Hotovo</button>');
             doneButton.on('click', function() {
                 completeOrder(order.id);
             });
@@ -62,9 +79,15 @@
         });
     }
 
+    function addItem(orderBox, itemName, itemQuantity) {
+        if (itemQuantity > 0) {
+            orderBox.append(`<div class="order-item">${itemName}: ${itemQuantity}</div>`);
+        }
+    }
+
     function completeOrder(orderId) {
         $.ajax({
-            url: 'complete/', // URL skriptu pro označení objednávky za dokončenou
+            url: 'complete/',
             type: 'POST',
             data: { id: orderId },
             success: function() {
