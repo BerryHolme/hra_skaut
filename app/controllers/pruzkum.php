@@ -43,28 +43,33 @@ class pruzkum
     public function order(\Base $base)
     {
         $json_data = file_get_contents('php://input');
-
         $order = json_decode($json_data, true);
 
         if ($order !== null) {
-
             $products = $order['products'];
             $discount = $order['discount'];
             $totalPrice = $order['totalPrice'];
             $datetime = $order['datetime'];
 
-            // Zpracování produktů
+            // Výpis produktů a jejich množství
             foreach ($products as $product) {
-                $name = $product['name'];
-                $quantity = $product['quantity'];
-                echo "$name, $quantity\n";
+                echo "Produkt: " . $product['name'] . ", Množství: " . $product['quantity'] . "\n";
             }
 
+            // Výpis dalších dat z objednávky
             echo "Sleva: $discount\n";
             echo "Celková cena: $totalPrice\n";
             echo "Čas objednávky: $datetime\n";
+
+            $orders = new \models\orders();
+            //$orders->chleba_s_klobaskami->$products[1]->["quantity"];
+
+
         } else {
             echo "Chyba při zpracování JSON dat.";
         }
     }
+
+
+
 }

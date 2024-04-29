@@ -299,6 +299,13 @@
         updateTotalPrice();
     });
     const sendOrder = () => {
+        const productMapping = {
+            'Chleba s klobáskami': 'chleba_s_klobaskami',
+            'Klobáska v rohlíku': 'klobaska_v_rohliku',
+            'Pepsi': 'pepsi',
+            'CapriSun': 'capri_sun'
+        };
+
         const order = {
             products: [],
             discount: parseInt(discountInput.value),
@@ -308,8 +315,11 @@
 
         products.forEach(product => {
             const name = product.querySelector('.name').textContent;
+            const mappedName = productMapping[name]; // Získání mapovaného názvu
             const quantity = parseInt(product.querySelector('input[type="number"]').value);
-            order.products.push({ name, quantity });
+            if (mappedName && quantity > 0) { // Zajistěte, že se přidají jen neprázdné položky
+                order.products.push({ name: mappedName, quantity });
+            }
         });
 
         fetch('order/', {
@@ -330,6 +340,9 @@
                 console.error('Chyba při odesílání objednávky:', error);
             });
     };
+
+    sendButton.addEventListener('click', sendOrder);
+
 
     sendButton.addEventListener('click', sendOrder);
 
