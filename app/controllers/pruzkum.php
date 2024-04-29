@@ -71,9 +71,7 @@ class pruzkum
         $order->dokonceno = false; // Inicializace stavu dokončení objednávky
 
         $order->save(); // Uložení dat do databáze
-
-        // Redirect nebo výstup
-        $base->reroute('/'); // Přesměrování uživatele po úspěšném uložení
+        echo $order->id;
     }
 
     public function orderes(\Base $base)

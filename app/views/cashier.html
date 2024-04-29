@@ -28,6 +28,7 @@
             font-size: xx-large;
             color: black;
             margin-bottom: 5px;
+            font-weight: bold;
         }
         .price {
             font-size: xx-large;
@@ -63,7 +64,8 @@
         #totalPrice {
             font-size: xxx-large;
             margin-bottom: 20px;
-            color: white;
+            color: green;
+            font-weight: bold;
         }
         #discountInput {
             margin-bottom: 10px;
@@ -95,6 +97,7 @@
 </div>
 <div class="product special" data-base-price="30">
     <div class="name">Chleba s klobáskami</div>
+    <div class="price">0 Kč</div>
     <div class="quantity-controls-special">
         <label>Chleba:</label>
         <button>-</button>
@@ -107,7 +110,6 @@
         <input type="number" value="0" min="0">
         <button>+</button>
     </div>
-    <div class="price">0 Kč</div>
 </div>
 <div class="product" data-price="25">
     <div class="name">Klobáska v rohlíku</div>
@@ -138,7 +140,10 @@
 </div>
 <button class="Downbutton" id="resetButton">Resetovat</button>
 <button class="Downbutton" id="sendButton">Odeslat</button>
-<div id="qrCode"></div>
+<div style="padding: 50px 0" id="qrCode"></div>
+
+<div id="orderID" style="font-size: xxx-large; color: black; padding: 20px 0; font-weight: bold">Čekám na novou objednávku...</div>
+
 
 
 
@@ -147,7 +152,7 @@
 <script>
     const products = document.querySelectorAll('.product');
     const totalPriceElement = document.getElementById('totalPrice');
-    const discountInput = document.getElementById('discountValue');
+    const discountInput = document.getElementById('discountValue');;
     const applyDiscountButton = document.getElementById('applyDiscountButton');
     const generateQRButton = document.getElementById('generateQRButton');
     const qrCodeElement = document.getElementById('qrCode');
@@ -313,9 +318,21 @@
         updateTotalPrice();
     });
 
+    const canSendOrder = () => {
+        return Array.from(products).some(product => {
+            const inputs = product.querySelectorAll('input[type="number"]');
+            return Array.from(inputs).some(input => parseInt(input.value) > 0);
+        });
+    };
+
 
 
     const sendOrder = () => {
+        if (!canSendOrder()) {
+            alert('Objednávku nelze odeslat. Alespoň jeden produkt musí mít množství větší než 1.');
+            return;
+        }
+
         const orderItems = Array.from(document.querySelectorAll('.product')).map(product => {
             const name = product.querySelector('.name').textContent;
             const inputs = product.querySelectorAll('input[type="number"]');
@@ -342,9 +359,11 @@
             .then(response => response.json())
             .then(data => {
                 console.log('Objednávka byla úspěšně odeslána', data);
+                document.getElementById('orderID').textContent = 'Číslo objednávky: ' + data; // Displaying the order ID from the response
             })
             .catch(error => {
                 console.error('Chyba při odesílání objednávky:', error);
+                document.getElementById('orderID').textContent = 'Order ID: Error processing order';
             });
 
         products.forEach(product => {

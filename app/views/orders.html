@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title>Objednávky</title>
     <style>
-        body{
+        body {
             font-family: "Franklin Gothic Medium", serif;
             background-color: darkorange;
-            font-size: xx-large;
+            font-size: xxx-large;
             text-align: center;
         }
         .order-box {
@@ -22,17 +22,49 @@
         button {
             cursor: pointer;
             width: 80%;
-            font-size: xx-large;
+            font-size: xxx-large;
             margin-left: auto;
             margin-right: auto;
             border-radius: 0;
             border: white;
             background-color: #4CAF50;
         }
+        .no-orders {
+            color: red;
+            font-size: xxx-large;
+            padding: 200px 0;
+        }
+        .skeleton {
+            background-color: #e0e0e0;
+            height: 20px;
+            margin: 10px 0;
+            background-image: linear-gradient(to right, #f0f0f0 0%, #797979 50%, #f0f0f0 100%);
+            background-size: 100% 200%;
+            animation: shimmer 0.5s infinite linear;
+        }
+        .skeleton-box {
+            height: 250px;
+        }
+        @keyframes shimmer {
+            0% { background-position: 100% 0; }
+            100% { background-position: 100% 100%; }
+        }
     </style>
 </head>
 <body>
-<div id="orders-container"></div>
+<h1>Objednávky</h1>
+<div id="orders-container">
+    <div class="order-box skeleton-box"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+    <div class="order-box skeleton-box"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+    <div class="order-box skeleton-box"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+    <div class="order-box skeleton-box"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+    <div class="order-box skeleton-box"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+    <div class="order-box skeleton-box"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+    <div class="order-box skeleton-box"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+    <div class="order-box skeleton-box"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+    <div class="order-box skeleton-box"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+    <div class="order-box skeleton-box"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+</div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
@@ -44,10 +76,8 @@
             type: 'GET',
             dataType: 'json',
             success: function(orders) {
-                if (orders.length !== lastOrderCount) {
-                    lastOrderCount = orders.length;
-                    displayOrders(orders);
-                }
+                lastOrderCount = orders.length;
+                displayOrders(orders);
             },
             error: function() {
                 console.error('Chyba při načítání objednávek');
@@ -59,24 +89,29 @@
         const container = $('#orders-container');
         container.empty(); // Vyčištění stávajících objednávek
 
-        orders.forEach(order => {
-            const orderBox = $('<div class="order-box"></div>');
-            orderBox.append(`<div style="color: rgba(77,77,77,0.5)" class="order-item">${order.id}</div>`);
-            const orderTime = new Date(order.cas_objednavky).toLocaleTimeString(); // Zobrazení pouze času
-            orderBox.append(`<div style="color: rgba(77,77,77,0.5)" class="order-item">${orderTime}</div><hr>`);
+        if (orders.length === 0) {
+            container.append('<div class="no-orders">Nejsou žádné objednávky</div>');
+        } else {
+            orders.forEach(order => {
+                const orderBox = $('<div class="order-box"></div>');
+                orderBox.append(`<div style="color: rgba(77,77,77,0.5)" class="order-item">${order.id}</div>`);
 
-            addItem(orderBox, 'Chleba', order.chleba);
-            addItem(orderBox, 'Klobásky', order.klobasky);
-            addItem(orderBox, 'Klobáska v rohlíku', order.klobaska_v_rohliku);
-            addItem(orderBox, 'Pepsi', order.pepsi);
-            addItem(orderBox, 'Capri Sun', order.capri_sun);
-            const doneButton = $('<br><button>Hotovo</button>');
-            doneButton.on('click', function() {
-                completeOrder(order.id);
+                const elapsed = calculateElapsedTime(order.cas_objednavky);
+                orderBox.append(`<div style="color: rgba(77,77,77,0.5)" class="order-item">${elapsed}</div><hr>`);
+
+                addItem(orderBox, 'Chleba', order.chleba);
+                addItem(orderBox, 'Klobásky', order.klobasky);
+                addItem(orderBox, 'Klobáska v rohlíku', order.klobaska_v_rohliku);
+                addItem(orderBox, 'Pepsi', order.pepsi);
+                addItem(orderBox, 'Capri Sun', order.capri_sun);
+                const doneButton = $('<br><button>Hotovo</button>');
+                doneButton.on('click', function() {
+                    completeOrder(order.id);
+                });
+                orderBox.append(doneButton);
+                container.append(orderBox);
             });
-            orderBox.append(doneButton);
-            container.append(orderBox);
-        });
+        }
     }
 
     function addItem(orderBox, itemName, itemQuantity) {
@@ -97,6 +132,15 @@
                 console.error('Chyba při dokončování objednávky');
             }
         });
+    }
+
+    function calculateElapsedTime(orderTime) {
+        const orderDate = new Date(orderTime);
+        const now = new Date();
+        const diff = now - orderDate; // Rozdíl ve milisekundách
+        const seconds = Math.floor((diff / 1000) % 60);
+        const minutes = Math.floor((diff / 60000) % 60);
+        return `${minutes}m ${seconds}s`;
     }
 
     setInterval(fetchOrders, 1000); // Každou sekundu zkontrolujeme nové objednávky
