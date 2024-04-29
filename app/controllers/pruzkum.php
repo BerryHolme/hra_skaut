@@ -42,32 +42,28 @@ class pruzkum
 
     public function order(\Base $base)
     {
-        $json_data = file_get_contents('php://input');
-        $order = json_decode($json_data, true);
+        $orders = new \models\orders();
 
-        if ($order !== null) {
-            $products = $order['products'];
-            $discount = $order['discount'];
-            $totalPrice = $order['totalPrice'];
-            $datetime = $order['datetime'];
-
-            // Výpis produktů a jejich množství
-            foreach ($products as $product) {
-                echo "Produkt: " . $product['name'] . ", Množství: " . $product['quantity'] . "\n";
-            }
-
-            // Výpis dalších dat z objednávky
-            echo "Sleva: $discount\n";
-            echo "Celková cena: $totalPrice\n";
-            echo "Čas objednávky: $datetime\n";
-
-            $orders = new \models\orders();
-            //$orders->chleba_s_klobaskami->$products[1]->["quantity"];
-
-
-        } else {
-            echo "Chyba při zpracování JSON dat.";
+        // Fetch all records from the database
+        $result = $orders->find();
+        $data = [];
+        foreach ($result as $order) {
+            $data[] = [
+                'chleba' => $order->chleba,
+                'klobasky' => $order->klobasky,
+                'klobaska_v_rohliku' => $order->klobaska_v_rohliku,
+                'pepsi' => $order->pepsi,
+                'capri_sun' => $order->capri_sun,
+                'sleva' => $order->sleva,
+                'celkova_cena' => $order->celkova_cena,
+                'cas_objednavky' => $order->cas_objednavky,
+                'cas_dokonceni_objednavky' => $order->cas_dokonceni_objednavky,
+                'dokonceno' => $order->dokonceno
+            ];
         }
+        header('Content-Type: application/json');
+        // Return data as JSON
+        echo json_encode($data);
     }
 
 

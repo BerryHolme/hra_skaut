@@ -300,14 +300,13 @@
     });
     const sendOrder = () => {
         const productMapping = {
-            'Chleba s klobáskami': 'chleba_s_klobaskami',
+            'Chleba s klobáskami': ['chleba', 'klobasky'],
             'Klobáska v rohlíku': 'klobaska_v_rohliku',
             'Pepsi': 'pepsi',
             'CapriSun': 'capri_sun'
         };
 
-        const order = {
-            products: [],
+        const baseOrder = {
             discount: parseInt(discountInput.value),
             totalPrice: parseInt(totalPriceElement.textContent.split(' ')[2]),
             datetime: new Date().toISOString()
@@ -315,13 +314,32 @@
 
         products.forEach(product => {
             const name = product.querySelector('.name').textContent;
-            const mappedName = productMapping[name]; // Získání mapovaného názvu
+            const mappedName = productMapping[name];
             const quantity = parseInt(product.querySelector('input[type="number"]').value);
-            if (mappedName && quantity > 0) { // Zajistěte, že se přidají jen neprázdné položky
-                order.products.push({ name: mappedName, quantity });
+
+            if (Array.isArray(mappedName)) {
+                // Special product with multiple components
+                const breadQuantity = parseInt(product.querySelectorAll('input')[0].value);
+                const sausageQuantity = parseInt(product.querySelectorAll('input')[1].value);
+
+                const order = {
+                    ...baseOrder,
+                    chleba: breadQuantity,
+                    klobasky: sausageQuantity
+                };
+                sendProductOrder(order);
+            } else if (mappedName && quantity > 0) {
+                // Regular product
+                const order = {
+                    ...baseOrder,
+                    [mappedName]: quantity
+                };
+                sendProductOrder(order);
             }
         });
+    };
 
+    const sendProductOrder = (order) => {
         fetch('order/', {
             method: 'POST',
             headers: {
@@ -333,13 +351,13 @@
                 if (!response.ok) {
                     throw new Error('Nepodařilo se odeslat objednávku.');
                 }
-                resetButton.click();
                 console.log('Objednávka úspěšně odeslána na server.');
             })
             .catch(error => {
                 console.error('Chyba při odesílání objednávky:', error);
             });
     };
+
 
     sendButton.addEventListener('click', sendOrder);
 

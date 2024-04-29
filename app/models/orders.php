@@ -7,10 +7,15 @@ use DB\Cortex;
 class orders extends Cortex
 {
     protected
-        $db = 'DB',     // F3 hive key of a valid DB object
-        $table = 'orders';   // the DB table to work on
+        $db = 'DB',
+        $table = 'orders';
     protected $fieldConf=[
-        'chleba_s_klobaskami'=>[
+        'chleba'=>[
+            'type'=>'INT8',
+            'nullable'=>false,
+            'default'=>0
+        ],
+        'klobasky'=>[
             'type'=>'INT8',
             'nullable'=>false,
             'default'=>0
