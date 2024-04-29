@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Objednávky</title>
+    <style>
+        .order-box {
+            border: 1px solid black;
+            padding: 10px;
+            margin: 10px;
+        }
+        .order-item {
+            margin: 5px 0;
+        }
+        button {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="orders-container"></div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    let lastOrderCount = 0;
+
+    function fetchOrders() {
+        $.ajax({
+            url: 'getOrderes/', // URL skriptu na serveru pro načtení objednávek
+            type: 'GET',
+            dataType: 'json',
+            success: function(orders) {
+                if (orders.length !== lastOrderCount) {
+                    lastOrderCount = orders.length;
+                    displayOrders(orders);
+                }
+            },
+            error: function() {
+                console.error('Chyba při načítání objednávek');
+            }
+        });
+    }
+
+    function displayOrders(orders) {
+        const container = $('#orders-container');
+        container.empty(); // Vyčištění stávajících objednávek
+
+        orders.forEach(order => {
+            const orderBox = $('<div class="order-box"></div>');
+            orderBox.append(`<div class="order-item">Čas odeslání: ${order.cas_objednavky}</div>`);
+            orderBox.append(`<div class="order-item">Chleba: ${order.chleba}</div>`);
+            orderBox.append(`<div class="order-item">Klobásky: ${order.klobasky}</div>`);
+            orderBox.append(`<div class="order-item">Klobáska v rohlíku: ${order.klobaska_v_rohliku}</div>`);
+            orderBox.append(`<div class="order-item">Pepsi: ${order.pepsi}</div>`);
+            orderBox.append(`<div class="order-item">Capri Sun: ${order.capri_sun}</div>`);
+            const doneButton = $('<button>Hotovo</button>');
+            doneButton.on('click', function() {
+                completeOrder(order.id);
+            });
+            orderBox.append(doneButton);
+            container.append(orderBox);
+        });
+    }
+
+    function completeOrder(orderId) {
+        $.ajax({
+            url: 'complete/', // URL skriptu pro označení objednávky za dokončenou
+            type: 'POST',
+            data: { id: orderId },
+            success: function() {
+                fetchOrders(); // Aktualizace seznamu objednávek po dokončení
+            },
+            error: function() {
+                console.error('Chyba při dokončování objednávky');
+            }
+        });
+    }
+
+    setInterval(fetchOrders, 1000); // Každou sekundu zkontrolujeme nové objednávky
+
+</script>
+</body>
+</html>

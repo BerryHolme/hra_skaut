@@ -138,7 +138,6 @@
 </div>
 <button class="Downbutton" id="resetButton">Resetovat</button>
 <button class="Downbutton" id="sendButton">Odeslat</button>
-<button class="Downbutton" id="generateQRButton">Generovat QR kód</button>
 <div id="qrCode"></div>
 
 
@@ -150,6 +149,8 @@
     const totalPriceElement = document.getElementById('totalPrice');
     const discountInput = document.getElementById('discountValue');
     const applyDiscountButton = document.getElementById('applyDiscountButton');
+    const generateQRButton = document.getElementById('generateQRButton');
+    const qrCodeElement = document.getElementById('qrCode');
 
     const updateSpecialProductPrice = (product) => {
         const breadInput = product.querySelectorAll('input')[0];
@@ -211,6 +212,19 @@
         // Aplikace slevy
         const discount = parseInt(discountInput.value);
         total -= discount;
+        qrCodeElement.innerHTML = '';
+        const totalPrice = parseInt(totalPriceElement.textContent.split(' ')[2]);
+        const paymentInfo = `SPD*1.0*ACC:CZ2808000000004040639093*RN:RADIM VODERKA*AM:${total}*CC:CZK*MSG:Klobaska`;
+
+        // Generování nového QR kódu
+        new QRCode(qrCodeElement, {
+            text: paymentInfo,
+            width: 400,
+            height: 400,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
 
         totalPriceElement.textContent = `Celková cena: ${total} Kč`;
     };
@@ -298,93 +312,59 @@
         discountInput.value = 0;
         updateTotalPrice();
     });
+
+
+
     const sendOrder = () => {
-        const productMapping = {
-            'Chleba s klobáskami': ['chleba', 'klobasky'],
-            'Klobáska v rohlíku': 'klobaska_v_rohliku',
-            'Pepsi': 'pepsi',
-            'CapriSun': 'capri_sun'
-        };
-
-        const baseOrder = {
-            discount: parseInt(discountInput.value),
-            totalPrice: parseInt(totalPriceElement.textContent.split(' ')[2]),
-            datetime: new Date().toISOString()
-        };
-
-        products.forEach(product => {
+        const orderItems = Array.from(document.querySelectorAll('.product')).map(product => {
             const name = product.querySelector('.name').textContent;
-            const mappedName = productMapping[name];
-            const quantity = parseInt(product.querySelector('input[type="number"]').value);
-
-            if (Array.isArray(mappedName)) {
-                // Special product with multiple components
-                const breadQuantity = parseInt(product.querySelectorAll('input')[0].value);
-                const sausageQuantity = parseInt(product.querySelectorAll('input')[1].value);
-
-                const order = {
-                    ...baseOrder,
-                    chleba: breadQuantity,
-                    klobasky: sausageQuantity
-                };
-                sendProductOrder(order);
-            } else if (mappedName && quantity > 0) {
-                // Regular product
-                const order = {
-                    ...baseOrder,
-                    [mappedName]: quantity
-                };
-                sendProductOrder(order);
-            }
+            const inputs = product.querySelectorAll('input[type="number"]');
+            const quantities = Array.from(inputs).map(input => parseInt(input.value));
+            return { name, quantities };
         });
-    };
 
-    const sendProductOrder = (order) => {
-        fetch('order/', {
+        const totalPrice = parseInt(totalPriceElement.textContent.split(' ')[2]);
+        const discount = parseInt(document.getElementById('discountValue').value);
+
+        const order = {
+            orderItems,
+            totalPrice,
+            discount
+        };
+
+        fetch('orderer/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(order)
         })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Nepodařilo se odeslat objednávku.');
-                }
-                console.log('Objednávka úspěšně odeslána na server.');
+            .then(response => response.json())
+            .then(data => {
+                console.log('Objednávka byla úspěšně odeslána', data);
             })
             .catch(error => {
                 console.error('Chyba při odesílání objednávky:', error);
             });
+
+        products.forEach(product => {
+            const inputs = product.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.value = 0;
+            });
+            if (product.hasAttribute('data-base-price')) {
+                updateSpecialProductPrice(product);
+            } else {
+                updatePrice(product);
+            }
+        });
+        discountInput.value = 0;
+        updateTotalPrice();
     };
 
-
-    sendButton.addEventListener('click', sendOrder);
-
-
-    sendButton.addEventListener('click', sendOrder);
-
-    const generateQRButton = document.getElementById('generateQRButton');
-    const qrCodeElement = document.getElementById('qrCode');
-
-    generateQRButton.addEventListener('click', () => {
-        // Vymaže předchozí QR kód, pokud existuje
-        qrCodeElement.innerHTML = '';
-        const totalPrice = parseInt(totalPriceElement.textContent.split(' ')[2]);
-        const paymentInfo = `SPD*1.0*ACC:CZ6030300000002437882068*RN:MATOUS SUCHY*AM:${totalPrice}*CC:CZK*MSG:Klobaska`;
-
-        // Generování nového QR kódu
-        new QRCode(qrCodeElement, {
-            text: paymentInfo,
-            width: 400,
-            height: 400,
-            colorDark : "#000000",
-            colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.H
-        });
-    });
-
+    document.getElementById('sendButton').addEventListener('click', sendOrder);
 </script>
+
 
 
 </body>

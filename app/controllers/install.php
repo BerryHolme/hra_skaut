@@ -24,7 +24,7 @@ class install
         \models\Odpovedi::setdown();
         \models\Odpovedi::setup();
 
-        \models\pruzkumMD::setdown();
+       // \models\pruzkumMD::setdown();
         \models\pruzkumMD::setup();
 
         \models\orders::setdown();

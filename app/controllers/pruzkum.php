@@ -7,9 +7,9 @@ class pruzkum
     public function index(\Base $base)
     {
         // Corrected condition check
-        if($base->get("SESSION.user[state]")){
+        if ($base->get("SESSION.user[state]")) {
             echo \Template::instance()->render("Z_Pruzkum_Dekujeme.html");
-        }else{
+        } else {
             echo \Template::instance()->render("Z_Pruzkum.html");
         }
     }
@@ -18,13 +18,13 @@ class pruzkum
     {
         $klobasky = $base->get("POST.klobasky");
         // Corrected condition check
-        if($base->get("SESSION.user[state]")){
+        if ($base->get("SESSION.user[state]")) {
             echo \Template::instance()->render("Z_Pruzkum_Dekujeme.html");
-        }else{
-            if ($klobasky > 9 or $klobasky < 1){
+        } else {
+            if ($klobasky > 9 or $klobasky < 1) {
                 echo "Můžes mít pouze 1 až 9 klobásek!";
                 return;
-            }else{
+            } else {
                 $databaze = new \models\pruzkumMD();
                 // Assuming pocet is a properly defined property
                 $databaze->pocet = $klobasky;
@@ -42,30 +42,67 @@ class pruzkum
 
     public function order(\Base $base)
     {
-        $orders = new \models\orders();
+        $json = json_decode($base->get('BODY'), true);
 
-        // Fetch all records from the database
-        $result = $orders->find();
-        $data = [];
-        foreach ($result as $order) {
-            $data[] = [
-                'chleba' => $order->chleba,
-                'klobasky' => $order->klobasky,
-                'klobaska_v_rohliku' => $order->klobaska_v_rohliku,
-                'pepsi' => $order->pepsi,
-                'capri_sun' => $order->capri_sun,
-                'sleva' => $order->sleva,
-                'celkova_cena' => $order->celkova_cena,
-                'cas_objednavky' => $order->cas_objednavky,
-                'cas_dokonceni_objednavky' => $order->cas_dokonceni_objednavky,
-                'dokonceno' => $order->dokonceno
-            ];
+        $order = new \models\orders();
+
+        // Mapping data from JSON to model
+        foreach ($json['orderItems'] as $item) {
+            switch ($item['name']) {
+                case 'Chleba s klobáskami':
+                    $order->chleba = $item['quantities'][0];
+                    $order->klobasky = $item['quantities'][1];
+                    break;
+                case 'Klobáska v rohlíku':
+                    $order->klobaska_v_rohliku = $item['quantities'][0];
+                    break;
+                case 'Pepsi':
+                    $order->pepsi = $item['quantities'][0];
+                    break;
+                case 'CapriSun':
+                    $order->capri_sun = $item['quantities'][0];
+                    break;
+            }
         }
-        header('Content-Type: application/json');
-        // Return data as JSON
-        echo json_encode($data);
+
+        $order->sleva = $json['discount'];
+        $order->celkova_cena = $json['totalPrice'];
+        $order->cas_objednavky = date('Y-m-d H:i:s'); // Nastavení aktuálního času objednávky
+        $order->dokonceno = false; // Inicializace stavu dokončení objednávky
+
+        $order->save(); // Uložení dat do databáze
+
+        // Redirect nebo výstup
+        $base->reroute('/'); // Přesměrování uživatele po úspěšném uložení
     }
 
+    public function orderes(\Base $base)
+    {
+        echo \Template::instance()->render("orders.html");
+    }
+
+    public function getOrders(\Base $base)
+    {
+        $db = $base->get('DB');  // Předpokládáme, že databázové spojení je uloženo v proměnné hive
+        $result = $db->exec('SELECT * FROM orders WHERE dokonceno = 0 ORDER BY cas_objednavky ASC');
+
+        echo json_encode($result);  // Vrácení výsledků v JSON formátu
+
+    }
+
+    public function complete(\Base $base)
+    {
+        $db = $base->get('DB');
+        $orderId = $base->get('POST.id');  // Získání ID objednávky z POST data
+
+        if (!empty($orderId)) {
+            $db->exec('UPDATE orders SET dokonceno = 1, cas_dokonceni_objednavky = NOW() WHERE id = ?', $orderId);
+            echo json_encode(['success' => true, 'message' => 'Objednávka byla označena jako dokončená.']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Není zadáno ID objednávky.']);
+        }
+
+    }
 
 
 }
